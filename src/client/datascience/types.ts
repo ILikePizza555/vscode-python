@@ -41,8 +41,8 @@ export enum InterruptResult {
 export const INotebookServer = Symbol('INotebookServer');
 export interface INotebookServer extends IAsyncDisposable {
     connect(conninfo: IConnection, kernelSpec: IJupyterKernelSpec | undefined, usingDarkTheme: boolean, cancelToken?: CancellationToken, workingDir?: string) : Promise<void>;
-    executeObservable(code: string, file: string, line: number, id?: string) : Observable<ICell[]>;
-    execute(code: string, file: string, line: number, cancelToken?: CancellationToken) : Promise<ICell[]>;
+    executeObservable(code: string, file: string, line: number, version: number, id?: string) : Observable<ICell[]>;
+    execute(code: string, file: string, line: number, version: number, cancelToken?: CancellationToken) : Promise<ICell[]>;
     restartKernel() : Promise<void>;
     waitForIdle() : Promise<void>;
     shutdown() : Promise<void>;
@@ -105,7 +105,7 @@ export const IHistory = Symbol('IHistory');
 export interface IHistory extends Disposable {
     closed: Event<IHistory>;
     show() : Promise<void>;
-    addCode(code: string, file: string, line: number, editor?: TextEditor) : Promise<void>;
+    addCode(code: string, file: string, line: number, version: number, editor?: TextEditor) : Promise<void>;
     // tslint:disable-next-line:no-any
     postMessage(type: string, payload?: any): void;
     undoCells(): void;
@@ -161,6 +161,7 @@ export interface ICell {
     id: string;
     file: string;
     line: number;
+    version: number;
     state: CellState;
     data: nbformat.ICodeCell | nbformat.IRawCell | nbformat.IMarkdownCell | ISysInfo;
 }
